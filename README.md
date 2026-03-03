@@ -1,236 +1,198 @@
-⚽ EURO 2024 SQL Analytics Project
+# ⚽ EURO 2024 SQL Analytics Project  
+**PostgreSQL (Supabase) | Database Design | Advanced SQL | Sports Analytics**
 
-PostgreSQL (Supabase) | Database Design | Advanced SQL | Sports Analytics
+---
 
-📌 Project Overview
+## 📌 Project Overview
 
-This project is an end-to-end SQL analytics build using real event-level data from the UEFA EURO 2024 tournament. The goal was to design and implement a relational database from raw CSV files and apply advanced SQL techniques to generate meaningful performance insights.
+This project is an end-to-end SQL analytics build using real event-level data from the **UEFA EURO 2024 tournament**. The goal was to design and implement a relational database from raw CSV files and apply advanced SQL techniques to generate meaningful performance insights.
 
 The project was structured in four phases:
 
-Database Design & Creation
+1. **Database Design & Creation**
+2. **Analytical Query Development**
+3. **Stored Procedures**
+4. **Advanced Queries & Final Reporting**
 
-Analytical Query Development
+The final deliverable includes a custom **“Player of the Tournament”** performance model built entirely in SQL.
 
-Stored Procedures
+---
 
-Advanced Queries & Final Reporting
+## 🛠 Tech Stack
 
-The final deliverable includes a custom “Player of the Tournament” performance model built entirely in SQL.
+- **PostgreSQL (Supabase)**
+- **SQL** (CTEs, Window Functions, Aggregations, CASE statements)
+- **Foreign Keys & Constraints**
+- **Stored Procedures (PL/pgSQL)**
+- **CSV Data Loading**
 
-🛠 Tech Stack
+---
 
-PostgreSQL (Supabase)
-
-SQL (CTEs, Window Functions, Aggregations, CASE statements)
-
-Foreign Keys & Constraints
-
-Stored Procedures (PL/pgSQL)
-
-CSV Data Loading
-
-📂 Database Schema
+## 📂 Database Schema
 
 The database was built from scratch using relational modeling principles.
 
-Tables Created
-team
+### **Tables Created**
 
-team_id (Primary Key)
+### `team`
+- `team_id` (Primary Key)
+- `name`
+- `total_xg` (float, updated via stored procedure)
 
-name
+### `player`
+- `player_id` (Primary Key)
+- `name`
+- `position`
+- `team_id` (Foreign Key)
 
-total_xg (float, updated via stored procedure)
+### `match_event`
+- `id` (Primary Key)
+- `match_id`
+- `team_id` (Foreign Key)
+- `player_id` (Foreign Key)
+- `timestamp`
+- `period`
+- `minute`
+- `second`
+- `location`
+- `pass_end_location`
+- `pass_outcome`
+- `shot_outcome`
+- `shot_statsbomb_xg`
+- `type`
 
-player
+### **Key Features**
+- Proper **foreign key relationships**
+- Table-level constraints
+- Schema normalization
+- Indexed relationships for query performance
 
-player_id (Primary Key)
+---
 
-name
+## 📊 Analytical Queries
 
-position
+The project progressively builds analytical complexity.
 
-team_id (Foreign Key)
+### 🔹 Basic Queries
+- Retrieve players by team  
+- Filter high xG events (> 0.25)  
+- Extract player positions and event metadata  
 
-match_event
+### 🔹 Aggregations
+- Total goals scored in tournament  
+- Player with most goals  
+- Team with highest cumulative xG  
 
-id (Primary Key)
+### 🔹 JOIN Operations
+- Event logs with team names  
+- Player-level xG totals with team context  
 
-match_id
+### 🔹 Subqueries & CTEs
+- Identify players scoring above tournament average  
 
-team_id (Foreign Key)
+### 🔹 Window Functions
+- Running total of xG within a specific match  
 
-player_id (Foreign Key)
+Example techniques used:
 
-timestamp
+```sql
+SUM() OVER (PARTITION BY match_id ORDER BY minute)
 
-period
+WITH cte AS (
+    SELECT ...
+)
 
-minute
+GROUP BY
+HAVING
+```
 
-second
+---
 
-location
-
-pass_end_location
-
-pass_outcome
-
-shot_outcome
-
-shot_statsbomb_xg
-
-type
-
-Key Features
-
-Proper foreign key relationships
-
-Table constraints
-
-Schema normalization
-
-Indexed relationships for performance
-
-📊 Analytical Queries
-
-The project progressively builds analytical complexity:
-
-🔹 Basic Queries
-
-Retrieve players by team
-
-Filter high xG events (> 0.25)
-
-Extract player positions and event metadata
-
-🔹 Aggregations
-
-Total goals scored in tournament
-
-Player with most goals
-
-Team with highest cumulative xG
-
-🔹 JOIN Operations
-
-Event logs with team names
-
-Player-level xG totals with team context
-
-🔹 Subqueries & CTEs
-
-Identify players scoring above tournament average
-
-🔹 Window Functions
-
-Running total of xG within a specific match
-
-⚙️ Stored Procedures
+## ⚙️ Stored Procedures
 
 A stored procedure was implemented to:
 
-Insert a new match_event
-
-Automatically update the corresponding team’s total_xg
+1. Insert a new `match_event`
+2. Automatically update the corresponding team’s `total_xg`
 
 This demonstrates:
+- Transaction logic
+- Procedural SQL (PL/pgSQL)
+- Automated metric updates
 
-Transaction logic
+---
 
-Procedural SQL (PL/pgSQL)
-
-Automated metric updates
-
-🏆 Final Project: Player of the Tournament Model
+## 🏆 Final Project: Player of the Tournament Model
 
 The final phase builds a performance rating model entirely in SQL.
 
-Metrics Included:
+### **Metrics Included**
+- Total Goals (`SUM`)
+- Total xG (`SUM`)
+- Pass Accuracy (successful pass = `NULL` in `pass_outcome`)
+- Custom rating using `CASE` logic
 
-Total Goals (SUM)
+Example rating logic:
 
-Total xG (SUM)
-
-Pass Accuracy (successful pass = NULL pass_outcome)
-
-Custom rating using CASE logic
+```sql
+CASE 
+    WHEN goals > 2 THEN 10
+    WHEN goals = 1 THEN 5
+    ELSE 0
+END
+```
 
 The final query includes:
+- At least **1 JOIN**
+- **1 CTE or Subquery**
+- **Aggregate functions & GROUP BY**
+- A **HAVING clause**
+- A **CASE statement**
 
-JOIN
-
-CTE
-
-Aggregations
-
-GROUP BY
-
-HAVING
-
-CASE statements
-
-Final Output Columns:
-
-Player Name
-
-Team Name
-
-Position
-
-Total Goals
-
-Pass Accuracy
-
-Total xG
-
-Final Rating
+### **Final Output Columns**
+- Player Name  
+- Team Name  
+- Position  
+- Total Goals  
+- Pass Accuracy  
+- Total xG  
+- Final Rating  
 
 This simulates a real performance analytics workflow used in professional football environments.
 
-🎯 Skills Demonstrated
+---
 
-Relational database modeling
+## 🎯 Skills Demonstrated
 
-Schema normalization
+- Relational database modeling  
+- Schema normalization  
+- Data ingestion via CSV  
+- Advanced SQL querying  
+- Window functions  
+- CTEs & subqueries  
+- Stored procedures  
+- Performance metric design  
+- Sports analytics modeling  
 
-Data ingestion via CSV
+---
 
-Advanced SQL querying
+## 🚀 How to Run (Supabase)
 
-Window functions
+1. Create a new Supabase project.  
+2. Run schema files in `/schema/`.  
+3. Load CSV data into tables.  
+4. Execute queries in `/queries/`.  
+5. Run the final analysis query in `/queries/99_final_analysis/`.  
 
-CTEs & subqueries
+---
 
-Stored procedures
-
-Performance metric design
-
-Sports analytics modeling
-
-🚀 How to Run (Supabase)
-
-Create a new Supabase project.
-
-Run schema files in /schema/.
-
-Load CSV data into tables.
-
-Execute queries in /queries/.
-
-Run the final analysis query in /queries/99_final_analysis/.
-
-📈 Why This Project Matters
+## 📈 Why This Project Matters
 
 This project mirrors real-world sports analytics workflows:
 
-Raw event data → structured database
+Raw event data → Structured database  
+Structured database → Analytical queries  
+Analytical queries → Performance metrics  
+Performance metrics → Decision-making model  
 
-Structured database → analytical queries
-
-Analytical queries → performance metrics
-
-Performance metrics → decision-making model
-
-It demonstrates both data engineering fundamentals and applied sports performance analytics using SQL.
+It demonstrates both **data engineering fundamentals** and **applied sports performance analytics** using SQL.
