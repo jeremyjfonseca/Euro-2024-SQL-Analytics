@@ -93,18 +93,6 @@ The project progressively builds analytical complexity.
 ### 🔹 Window Functions
 - Running total of xG within a specific match  
 
-Example techniques used:
-
-```sql
-SUM() OVER (PARTITION BY match_id ORDER BY minute)
-
-WITH cte AS (
-    SELECT ...
-)
-
-GROUP BY
-HAVING
-```
 
 ---
 
@@ -131,16 +119,6 @@ The final phase builds a performance rating model entirely in SQL.
 - Total xG (`SUM`)
 - Pass Accuracy (successful pass = `NULL` in `pass_outcome`)
 - Custom rating using `CASE` logic
-
-Example rating logic:
-
-```sql
-CASE 
-    WHEN goals > 2 THEN 10
-    WHEN goals = 1 THEN 5
-    ELSE 0
-END
-```
 
 The final query includes:
 - At least **1 JOIN**
