@@ -25,7 +25,7 @@ create table project_match_event(
   pass_end_location varchar(25),
   pass_outcome varchar(50),
   shot_outcome varchar(50),
-  shot_statbomb_xg float,
+  shot_statsbomb_xg float,
   type varchar(150),
   foreign key (team_id) references project_team(team_id),
   foreign key (player_id) references project_player(player_id)
